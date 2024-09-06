@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { getPrisma } from "../prismaFunction";
 import { decode, sign, verify } from "hono/jwt";
-import { createPost, updatePost } from "@pushkar1713/week13-common";}
+import { createPost, updatePost } from "@pushkar1713/week13-common";
 export const postRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
