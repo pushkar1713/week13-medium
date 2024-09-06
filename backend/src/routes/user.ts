@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { getPrisma } from "../prismaFunction";
 import { decode, sign, verify } from "hono/jwt";
+import { signinInput, signupInput } from "@pushkar1713/week13-common";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -12,6 +13,13 @@ export const userRouter = new Hono<{
 userRouter.post("/signup", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
+  const { success } = signupInput.safeParse(body);
+  if (!success) {
+    c.status(403);
+    return c.json({
+      msg: "invalid types",
+    });
+  }
 
   try {
     const user = await prisma.user.create({
@@ -38,6 +46,13 @@ userRouter.post("/signup", async (c) => {
 userRouter.post("/signin", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
+  const { success } = signinInput.safeParse(body);
+  if (!success) {
+    c.status(403);
+    return c.json({
+      msg: "invalid types",
+    });
+  }
 
   try {
     const user = prisma.user.findUnique({

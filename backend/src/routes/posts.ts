@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { getPrisma } from "../prismaFunction";
 import { decode, sign, verify } from "hono/jwt";
-
+import { createPost, updatePost } from "@pushkar1713/week13-common";}
 export const postRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -40,6 +40,13 @@ postRouter.use("/*", async (c, next) => {
 postRouter.post("/", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
+  const { success } = createPost.safeParse(body);
+  if (!success) {
+    c.status(403);
+    return c.json({
+      msg: "invalid types",
+    });
+  }
   const userId = c.get("userId");
 
   const blog = await prisma.post.create({
@@ -84,6 +91,13 @@ postRouter.get("/:id", async (c) => {
 postRouter.put("/", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
+  const { success } = updatePost.safeParse(body);
+  if (!success) {
+    c.status(403);
+    return c.json({
+      msg: "invalid types",
+    });
+  }
 
   const updatedBlog = await prisma.post.update({
     where: {
