@@ -19,25 +19,30 @@ postRouter.use("/*", async (c, next) => {
   // otherwise we return a 403 status code
 
   const header = c.req.header("authorization") || "";
-  const token = header.split("")[1];
+  const [bearer, token] = header.split(" ");
+
+  if (!token || bearer !== "Bearer") {
+    throw new Error("Invalid or missing authorization header");
+  }
+
   const response = await verify(token, c.env.JWT_SECRET);
 
   if (response) {
     //@ts-ignore
     c.set("userId", response.id);
-    next();
+    await next();
   } else {
     c.status(403);
     return c.json({ error: "unauthorized" });
   }
 });
 
-postRouter.post("/blog", async (c) => {
+postRouter.post("/", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
   const userId = c.get("userId");
 
-  const blog = prisma.post.create({
+  const blog = await prisma.post.create({
     data: {
       title: body.title,
       content: body.content,
@@ -45,18 +50,23 @@ postRouter.post("/blog", async (c) => {
     },
   });
 
-  return c.text("blog route");
+  return c.json({ id: blog.id });
+});
+
+postRouter.get("/bulk", async (c) => {
+  const prisma = getPrisma(c.env.DATABASE_URL);
+  const blogs = await prisma.post.findMany();
+  return c.json(blogs);
 });
 
 postRouter.get("/:id", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
-  const body = await c.req.json();
   const id = c.req.param("id");
 
   try {
-    const blog = prisma.post.findUnique({
+    const blog = await prisma.post.findUnique({
       where: {
-        id: body.id,
+        id: id,
       },
     });
 
@@ -74,13 +84,16 @@ postRouter.get("/:id", async (c) => {
 postRouter.put("/", async (c) => {
   const prisma = getPrisma(c.env.DATABASE_URL);
   const body = await c.req.json();
-  return c.text("this is a put route");
-});
 
-postRouter.get("/bulk", async (c) => {
-  const prisma = getPrisma(c.env.DATABASE_URL);
-  const blogs = prisma.post.findMany();
-  return c.json({
-    blogs,
+  const updatedBlog = await prisma.post.update({
+    where: {
+      id: body.id,
+    },
+    data: {
+      title: body.title,
+      content: body.content,
+    },
   });
+
+  return c.text("blog updated");
 });
