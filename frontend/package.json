@@ -12,6 +12,7 @@
   "dependencies": {
     "@pushkar1713/week13-common": "^1.0.1",
     "axios": "^1.7.7",
+    "jodit-react": "^4.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"

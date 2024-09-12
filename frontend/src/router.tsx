@@ -4,6 +4,7 @@ import Blog from "./pages/blog";
 import SignUp from "./pages/signup";
 import SignIn from "./pages/signin";
 import { Blogs } from "./pages/blogs";
+import { Publish } from "./pages/publish";
 export const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -18,12 +19,16 @@ export const appRouter = createBrowserRouter([
         element: <SignIn />,
       },
       {
-        path: "/blog",
+        path: "/blog/:id",
         element: <Blog />,
       },
       {
         path: "/blogs",
         element: <Blogs />,
+      },
+      {
+        path: "/publish",
+        element: <Publish />,
       },
     ],
   },

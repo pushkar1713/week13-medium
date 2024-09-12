@@ -1,39 +1,72 @@
+import { Link } from "react-router-dom";
+
 interface blogCardProps {
   authorName: String;
   title: String;
   content: String;
   date: String;
+  id: String;
 }
 
 export const BlogCard = ({
+  id,
   authorName,
   title,
   content,
   date,
 }: blogCardProps) => {
   return (
-    <div className="flex justify-center p-2">
-      <div className="w-1/2 border-black border-2">
-        <div className="flex p-2">
-          <div className="flex justify-centre flex-col px-2">
-            <Avatar name={authorName} />
+    <Link to={`/blog/${id}`}>
+      <div className="flex justify-center p-2">
+        <div className="w-1/2 border border-2 max-h-60 overflow-hidden rounded-lg min-h-52">
+          <div className="flex p-2">
+            <div className="flex justify-centre flex-col pl-2">
+              <Avatar name={authorName} />
+            </div>
+            <div className="px-2 capitalize">{authorName} </div>
+            {date}
           </div>
-          <div className="px-2">{authorName} </div>
-          {date}
+          <div className="text-2xl font-serif font-medium px-4 capitalize ">
+            {title}
+          </div>
+          <div className="px-4 border-b-2 border-black">{`Reading time : ${Math.ceil(
+            content.length / 200
+          )} minutes`}</div>
+          <div className="px-2">
+            {content.length > 100 ? (
+              <div
+                dangerouslySetInnerHTML={{ __html: content.slice(0, 200) }}
+              />
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: content }} />
+            )}
+          </div>
         </div>
-        <div className="text-3xl font-serif font-semibold ">{title}</div>
-        <div>{content.length > 100 ? content.slice(0, 200) : content}...</div>
-        <div>{`Reading time : ${Math.ceil(content.length / 200)} minutes`}</div>
-        <div className="bg-slate-400 h-1 w-full"></div>
       </div>
-    </div>
+    </Link>
   );
 };
 
-const Avatar = ({ name }: { name: String }) => {
+export function Avatar({
+  name,
+  size = "small",
+}: {
+  name: String;
+  size?: "small" | "big";
+}) {
   return (
-    <div className="relative inline-flex items-center justify-center w-5 h-5 overflow-hidden bg-gray-300 rounded-full">
-      <span className="font-extralight text-gray-600">{name[0]}</span>
+    <div
+      className={`relative inline-flex items-center justify-center overflow-hidden bg-red-500 rounded-full ${
+        size === "small" ? "w-6 h-6" : "w-10 h-10"
+      }`}
+    >
+      <span
+        className={`${
+          size === "small" ? "text-xs" : "text-md"
+        } font-extralight text-white uppercase`}
+      >
+        {name[0]}
+      </span>
     </div>
   );
-};
+}

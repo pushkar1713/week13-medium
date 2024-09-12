@@ -49,15 +49,20 @@ postRouter.post("/", async (c) => {
   }
   const userId = c.get("userId");
 
-  const blog = await prisma.post.create({
-    data: {
-      title: body.title,
-      content: body.content,
-      author_id: userId,
-    },
-  });
+  try {
+    const blog = await prisma.post.create({
+      data: {
+        title: body.title,
+        content: body.content,
+        author_id: userId,
+      },
+    });
 
-  return c.json({ id: blog.id });
+    return c.json({ id: blog.id, msg: "done" });
+  } catch (e) {
+    c.status(411);
+    return c.json({ msg: "error occured while publishing the blog", error: e });
+  }
 });
 
 postRouter.get("/bulk", async (c) => {
@@ -85,6 +90,16 @@ postRouter.get("/:id", async (c) => {
     const blog = await prisma.post.findUnique({
       where: {
         id: id,
+      },
+      select: {
+        content: true,
+        title: true,
+        id: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
