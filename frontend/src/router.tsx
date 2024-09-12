@@ -5,11 +5,16 @@ import SignUp from "./pages/signup";
 import SignIn from "./pages/signin";
 import { Blogs } from "./pages/blogs";
 import { Publish } from "./pages/publish";
+import { Home } from "./pages/home";
 export const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Home />, // Home page at the root path
+      },
       {
         path: "/signup",
         element: <SignUp />,
