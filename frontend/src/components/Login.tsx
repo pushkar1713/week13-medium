@@ -50,7 +50,7 @@ export const Login = () => {
           />
           <LabelledInput
             label="Password"
-            placeholder="password"
+            placeholder="Min. 6 Characters"
             type={"password"}
             onChange={(e) => {
               setPostInputs((c) => ({
