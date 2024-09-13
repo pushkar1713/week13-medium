@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { getPrisma } from "../prismaFunction";
 import { decode, sign, verify } from "hono/jwt";
 import { signinInput, signupInput } from "@pushkar1713/week13-common";
+import bcrypt from "bcryptjs";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -22,11 +23,12 @@ userRouter.post("/signup", async (c) => {
   }
 
   try {
+    const hashedPassword = await bcrypt.hash(body.password, 10);
     const user = await prisma.user.create({
       data: {
         email: body.email,
         name: body.name,
-        password: body.password,
+        password: hashedPassword,
       },
     });
 
@@ -55,10 +57,13 @@ userRouter.post("/signin", async (c) => {
   }
 
   try {
-    const user = prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         email: body.email,
-        password: body.password,
+      },
+      select: {
+        id: true,
+        password: true,
       },
     });
 
@@ -69,8 +74,13 @@ userRouter.post("/signin", async (c) => {
       });
     }
 
+    const passwordMatch = await bcrypt.compare(body.password, user.password);
+    if (!passwordMatch) {
+      return c.json({ error: "Invalid password" }, 401);
+    }
     //@ts-ignore
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+    console.log(jwt);
     return c.json({ jwt });
   } catch {
     c.status(411);

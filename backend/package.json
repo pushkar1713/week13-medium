@@ -9,11 +9,16 @@
     "@prisma/client": "^5.19.1",
     "@prisma/extension-accelerate": "^1.1.0",
     "@pushkar1713/week13-common": "^1.0.1",
+    "argon2": "^0.41.1",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "hono": "^4.5.11",
     "prisma": "^5.19.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "wrangler": "^3.74.0"
   }
 }

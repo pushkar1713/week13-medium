@@ -3,7 +3,7 @@ import { Avatar } from "./blogCard";
 
 export const FullBlog = ({ blog }: { blog: Blogs }) => {
   return (
-    <div>
+    <div className="h-screen">
       <div className="flex justify-center">
         <div className="grid grid-cols-12 px-10 w-full pt-200 max-w-screen-xl pt-12">
           <div className="col-span-8">

@@ -18,22 +18,45 @@ postRouter.use("/*", async (c, next) => {
   // if the header is correct then we need can proceed
   // otherwise we return a 403 status code
 
-  const header = c.req.header("authorization") || "";
+  const header = c.req.header("Authorization") || "";
   const [bearer, token] = header.split(" ");
 
-  if (!token || bearer !== "Bearer") {
-    throw new Error("Invalid or missing authorization header");
-  }
+  //   if (!token || bearer !== "Bearer") {
+  //     throw new Error("Invalid or missing authorization header");
+  //   }
 
-  const response = await verify(token, c.env.JWT_SECRET);
+  //   const response = await verify(token, c.env.JWT_SECRET);
+  //   console.log(response);
 
-  if (response) {
-    //@ts-ignore
-    c.set("userId", response.id);
-    await next();
-  } else {
+  //   if (response) {
+  //     //@ts-ignore
+  //     c.set("userId", response.id);
+  //     console.log(response.id);
+  //     await next();
+  //   } else {
+  //     c.status(403);
+  //     return c.json({ error: "unauthorized" });
+  //   }
+  // });
+
+  try {
+    const user = await verify(token, c.env.JWT_SECRET);
+    console.log(user);
+    if (user) {
+      //@ts-ignore
+      c.set("userId", user.id);
+      await next();
+    } else {
+      c.status(403);
+      return c.json({
+        message: "You are not logged in",
+      });
+    }
+  } catch (e) {
     c.status(403);
-    return c.json({ error: "unauthorized" });
+    return c.json({
+      message: "You are not logged in",
+    });
   }
 });
 
@@ -61,7 +84,11 @@ postRouter.post("/", async (c) => {
     return c.json({ id: blog.id, msg: "done" });
   } catch (e) {
     c.status(411);
-    return c.json({ msg: "error occured while publishing the blog", error: e });
+    return c.json({
+      msg: "error occured while publishing the blog",
+      error: e,
+      userId: userId,
+    });
   }
 });
 

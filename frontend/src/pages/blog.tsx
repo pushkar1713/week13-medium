@@ -1,5 +1,7 @@
 import { Appbar } from "../components/appbar";
+import { Footer } from "../components/footer";
 import { FullBlog } from "../components/fullBlog";
+import { Spinner } from "../components/spinner";
 import { userBlogs } from "../hooks/hooks";
 import { useParams } from "react-router-dom";
 
@@ -14,16 +16,20 @@ const Blog = () => {
     return (
       <div>
         <Appbar />
+
         <div className="h-screen flex flex-col justify-center">
-          <div className="flex justify-center"> loading...</div>
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
         </div>
       </div>
     );
   }
   return (
-    <div>
+    <div className="h-screen">
       <Appbar />
       <FullBlog blog={blog} />
+      <Footer />
     </div>
   );
 };

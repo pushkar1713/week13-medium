@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import JoditEditor from "jodit-react";
 import { Appbar } from "../components/appbar";
+import { Footer } from "../components/footer";
 
 export const Publish = () => {
   const [title, setTitle] = useState("");
@@ -17,7 +18,7 @@ export const Publish = () => {
       <h1 className="flex justify-center font-serif font-bold text-4xl p-5 underline decoration-wavy">
         Start Writing
       </h1>
-      <div className="flex justify-center w-full pt-2">
+      <div className="flex justify-center w-full pt-2 h-screen">
         <div className="max-w-screen-lg w-full">
           <input
             onChange={(e) => {
@@ -62,6 +63,7 @@ export const Publish = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

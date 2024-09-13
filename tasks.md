@@ -1,4 +1,1 @@
-- add skeleton
-- add spinner
 - add homepage
-- add header and footer
